@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.alirezazoghi.mvvm"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding.enabled true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //LifeCycle Component
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta03"
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //RetrofitInit Component
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+
+    //Room Component
+    implementation "androidx.room:room-runtime:2.2.0-alpha02"
+    annotationProcessor "androidx.room:room-compiler:2.2.0-alpha02"
+
+    implementation "android.arch.paging:runtime:1.0.1"
+}
