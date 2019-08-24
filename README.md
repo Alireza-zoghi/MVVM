@@ -1,3 +1,3 @@
 # MVVM
-mvvm architecture whit room
+Notepad App whit mvvm Architecture using Room and LiveData
 # updating...!
