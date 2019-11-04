@@ -6,39 +6,43 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.alirezazoghi.mvvm.Model.Note;
-import com.alirezazoghi.mvvm.ViewModel.NoteRepository;
+import com.alirezazoghi.mvvm.model.Note;
+import com.alirezazoghi.mvvm.ViewModel.repository.NoteRepository;
 
 import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
 
     private NoteRepository repository;
-    private LiveData<List<Note>> allNotes;
+
+    private NoteRepository getRepositoryInstance() {
+        if (repository == null)
+            repository = new NoteRepository(getApplication());
+        return repository;
+    }
 
     public NoteViewModel(@NonNull Application application) {
         super(application);
-        repository = new NoteRepository(application);
-        allNotes = repository.getAllNotes();
     }
 
     public void insert(Note note) {
-        repository.insert(note);
+        getRepositoryInstance().insert(note);
     }
 
     public void update(Note note) {
-        repository.update(note);
+        getRepositoryInstance().update(note);
     }
 
     public void delete(Note note) {
-        repository.delete(note);
+        getRepositoryInstance().delete(note);
     }
 
     public void deleteAllNotes() {
-        repository.deleteAllNotes();
+        getRepositoryInstance().deleteAllNotes();
     }
 
     public LiveData<List<Note>> getAllNotes() {
-        return allNotes;
+        return getRepositoryInstance().getAllNotes();
     }
+
 }

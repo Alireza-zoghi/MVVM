@@ -1,4 +1,4 @@
-package com.alirezazoghi.mvvm.View;
+package com.alirezazoghi.mvvm.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.alirezazoghi.mvvm.Model.Note;
-import com.alirezazoghi.mvvm.View.adapter.NoteAdapter;
+import com.alirezazoghi.mvvm.model.Note;
+import com.alirezazoghi.mvvm.view.adapter.NoteAdapter;
 import com.alirezazoghi.mvvm.ViewModel.NoteViewModel;
 import com.alirezazoghi.mvvm.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,12 +30,38 @@ public class MainActivity extends AppCompatActivity {
     public static final int EDIT_NOTE_REQUEST = 13143;
     private NoteViewModel noteViewModel;
     private NoteAdapter noteAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
+        init();
+
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        noteAdapter = new NoteAdapter();
+        recyclerView.setAdapter(noteAdapter);
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+
+        getFromDatabase();
+
+        noteAdapter.setOnItemClickListener(new NoteAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(Note note) {
+                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+                intent.putExtra(AddNoteActivity.EXTRA_EDIT, note);
+                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+            }
+        });
+    }
+
+    private void init() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Notes");
@@ -48,15 +74,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_NOTE_REQUEST);
             }
         });
+    }
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-
-        noteAdapter = new NoteAdapter();
-        recyclerView.setAdapter(noteAdapter);
-
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+    private void getFromDatabase() {
         noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
@@ -77,15 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "note deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
-
-        noteAdapter.setOnItemClickListener(new NoteAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(Note note) {
-                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
-                intent.putExtra(AddNoteActivity.EXTRA_EDIT, note);
-                startActivityForResult(intent, EDIT_NOTE_REQUEST);
-            }
-        });
     }
 
     @Override
@@ -120,4 +131,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

@@ -1,4 +1,4 @@
-package com.alirezazoghi.mvvm.View;
+package com.alirezazoghi.mvvm.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import com.alirezazoghi.mvvm.Model.Note;
+import com.alirezazoghi.mvvm.model.Note;
 import com.alirezazoghi.mvvm.R;
 
 public class AddNoteActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.alirezazoghi.mvvm.View.adapter;
+package com.alirezazoghi.mvvm.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -7,16 +7,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alirezazoghi.mvvm.Model.Note;
+import com.alirezazoghi.mvvm.model.Note;
 import com.alirezazoghi.mvvm.R;
 
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
-    private onItemClickListener listener;
 
+    private onItemClickListener listener;
     public NoteAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -34,11 +35,13 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                     oldItem.getDescription().equals(newItem.getDescription()) &&
                     oldItem.getPriority() == newItem.getPriority();
         }
+
     };
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         return new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false));
     }
 
@@ -62,14 +65,11 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             title = v.findViewById(R.id.tv_title);
             description = v.findViewById(R.id.tv_description);
             priority = v.findViewById(R.id.tv_priority);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(getAdapterPosition()));
-                    }
-
+            v.setOnClickListener(view -> {
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(getAdapterPosition()));
                 }
+
             });
         }
     }

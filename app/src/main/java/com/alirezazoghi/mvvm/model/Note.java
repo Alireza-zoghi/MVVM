@@ -1,4 +1,4 @@
-package com.alirezazoghi.mvvm.model;
+package com.alirezazoghi.mvvm.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,25 +7,19 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
 @Entity(tableName = "note_table")
 public class Note implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    @SerializedName("id")
     private int id;
 
-    @SerializedName("title")
     @ColumnInfo(name = "title")
     private String title;
 
-    @SerializedName("description")
     @ColumnInfo(name = "description")
     private String description;
 
-    @SerializedName("priority")
     @ColumnInfo(name = "priority")
     private int priority;
 
@@ -54,6 +48,7 @@ public class Note implements Parcelable {
     public void setId(int id) {
         this.id = id;
     }
+
 
     @Override
     public int describeContents() {

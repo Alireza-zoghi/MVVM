@@ -1,4 +1,4 @@
-package com.alirezazoghi.mvvm.Model.db;
+package com.alirezazoghi.mvvm.db;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.alirezazoghi.mvvm.Model.Note;
+import com.alirezazoghi.mvvm.model.Note;
 
 import java.util.List;
 

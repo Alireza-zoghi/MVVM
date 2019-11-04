@@ -1,45 +1,56 @@
-package com.alirezazoghi.mvvm.ViewModel;
+package com.alirezazoghi.mvvm.ViewModel.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import com.alirezazoghi.mvvm.Model.Note;
-import com.alirezazoghi.mvvm.Model.db.NoteDAO;
-import com.alirezazoghi.mvvm.Model.db.NoteDatabase;
+import com.alirezazoghi.mvvm.model.Note;
+import com.alirezazoghi.mvvm.db.NoteDAO;
+import com.alirezazoghi.mvvm.db.NoteDatabase;
 
 import java.util.List;
 
-
 public class NoteRepository {
+
+    private Application context;
     private NoteDAO noteDAO;
-    private LiveData<List<Note>> allNotes;
+    private NoteDatabase database;
+
+    private NoteDAO getNoteDAOInstance() {
+        if (noteDAO == null)
+            noteDAO = getNoteDatabaseInstance().noteDAO();
+        return noteDAO;
+    }
+
+    private NoteDatabase getNoteDatabaseInstance() {
+        if (database == null)
+            database = NoteDatabase.getInstance(context);
+        return database;
+    }
 
     public NoteRepository(Application application) {
-        NoteDatabase database = NoteDatabase.getInstance(application);
-        noteDAO = database.noteDAO();
-        allNotes = noteDAO.getAllNotes();
+        this.context = application;
     }
 
     public void insert(Note note) {
-        new InsertNoteAsyncTask(noteDAO).execute(note);
+        new InsertNoteAsyncTask(getNoteDAOInstance()).execute(note);
     }
 
     public void update(Note note) {
-        new UpdateNoteAsyncTask(noteDAO).execute(note);
+        new UpdateNoteAsyncTask(getNoteDAOInstance()).execute(note);
     }
 
     public void delete(Note note) {
-        new DeleteNoteAsyncTask(noteDAO).execute(note);
+        new DeleteNoteAsyncTask(getNoteDAOInstance()).execute(note);
     }
 
     public void deleteAllNotes() {
-        new DeleteAllNoteAsyncTask(noteDAO).execute();
+        new DeleteAllNoteAsyncTask(getNoteDAOInstance()).execute();
     }
 
     public LiveData<List<Note>> getAllNotes() {
-        return allNotes;
+        return getNoteDAOInstance().getAllNotes();
     }
 
     private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void> {
