@@ -17,7 +17,7 @@ public class RetrofitProvider {
         OkHttpClient client = new OkHttpClient();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.8/note/")
+                .baseUrl("https://jsonplaceholder.typicode.com/")
                 .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))

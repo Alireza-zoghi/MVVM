@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.alirezazoghi.mvvm.model.Note;
 import com.alirezazoghi.mvvm.ViewModel.repository.NoteRepository;
 
+
 import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
@@ -41,8 +42,8 @@ public class NoteViewModel extends AndroidViewModel {
         getRepositoryInstance().deleteAllNotes();
     }
 
-    public LiveData<List<Note>> getAllNotes() {
-        return getRepositoryInstance().getAllNotes();
+    public LiveData<List<Note>> getAllNotes(boolean syncWhitServer) {
+        return getRepositoryInstance().getAllNotes(syncWhitServer);
     }
 
 }

@@ -17,15 +17,15 @@ public class Note implements Parcelable {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("title")
+    @SerializedName("name")
     @ColumnInfo(name = "title")
     private String title;
 
-    @SerializedName("description")
+    @SerializedName("body")
     @ColumnInfo(name = "description")
     private String description;
 
-    @SerializedName("priority")
+    @SerializedName("postId")
     @ColumnInfo(name = "priority")
     private int priority;
 

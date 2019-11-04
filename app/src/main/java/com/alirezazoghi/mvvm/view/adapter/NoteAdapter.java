@@ -60,7 +60,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     class NoteHolder extends RecyclerView.ViewHolder {
         private TextView title, description, priority;
 
-        public NoteHolder(@NonNull View v) {
+        private NoteHolder(@NonNull View v) {
             super(v);
             title = v.findViewById(R.id.tv_title);
             description = v.findViewById(R.id.tv_description);

@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.alirezazoghi.mvvm.model.Note;
@@ -25,40 +27,35 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NoteAdapter.onItemClickListener {
     public static final int ADD_NOTE_REQUEST = 13142;
     public static final int EDIT_NOTE_REQUEST = 13143;
     private NoteViewModel noteViewModel;
     private NoteAdapter noteAdapter;
     private RecyclerView recyclerView;
+    private Switch syncWhitServerSwitch;
+    private FloatingActionButton buttonAddNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         init();
 
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-
-        noteAdapter = new NoteAdapter();
-        recyclerView.setAdapter(noteAdapter);
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
 
-        getFromDatabase();
+        getNotes(syncWhitServerSwitch.isChecked());
 
-        noteAdapter.setOnItemClickListener(new NoteAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(Note note) {
-                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
-                intent.putExtra(AddNoteActivity.EXTRA_EDIT, note);
-                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+        syncWhitServerSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            getNotes(b);
+            if (b){
+                buttonAddNote.setVisibility(View.GONE);
+            }else {
+                buttonAddNote.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
     private void init() {
@@ -66,23 +63,26 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Notes");
 
-        FloatingActionButton buttonAddNote = findViewById(R.id.fab_add_note);
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
-                startActivityForResult(intent, ADD_NOTE_REQUEST);
-            }
+        buttonAddNote = findViewById(R.id.fab_add_note);
+        buttonAddNote.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+            startActivityForResult(intent, ADD_NOTE_REQUEST);
         });
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        noteAdapter = new NoteAdapter();
+        recyclerView.setAdapter(noteAdapter);
+        noteAdapter.setOnItemClickListener(this);
+        syncWhitServerSwitch = findViewById(R.id.note_switch);
     }
 
-    private void getFromDatabase() {
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-                noteAdapter.submitList(notes);
-            }
-        });
+    private void getNotes(boolean syncWhitServer) {
+        noteViewModel.getAllNotes(syncWhitServer).observe(this
+                , notes -> noteAdapter.submitList(notes)
+        );
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -132,4 +132,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onItemClick(Note note) {
+        Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+        intent.putExtra(AddNoteActivity.EXTRA_EDIT, note);
+        startActivityForResult(intent, EDIT_NOTE_REQUEST);
+    }
 }
