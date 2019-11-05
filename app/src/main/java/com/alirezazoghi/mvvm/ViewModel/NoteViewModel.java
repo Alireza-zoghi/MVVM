@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.alirezazoghi.mvvm.model.Note;
 import com.alirezazoghi.mvvm.ViewModel.repository.NoteRepository;
@@ -15,11 +16,13 @@ import java.util.List;
 public class NoteViewModel extends AndroidViewModel {
 
     private NoteRepository repository;
+    public LiveData<List<Note>> liveData;
 
-    private NoteRepository getRepositoryInstance() {
-        if (repository == null)
-            repository = new NoteRepository(getApplication());
-        return repository;
+    public void init() {
+        if (liveData != null)
+            return;
+        repository = NoteRepository.getInstance(getApplication());
+        liveData = repository.getAllNotes();
     }
 
     public NoteViewModel(@NonNull Application application) {
@@ -27,23 +30,23 @@ public class NoteViewModel extends AndroidViewModel {
     }
 
     public void insert(Note note) {
-        getRepositoryInstance().insert(note);
+        repository.insert(note);
     }
 
     public void update(Note note) {
-        getRepositoryInstance().update(note);
+        repository.update(note);
     }
 
     public void delete(Note note) {
-        getRepositoryInstance().delete(note);
+        repository.delete(note);
     }
 
     public void deleteAllNotes() {
-        getRepositoryInstance().deleteAllNotes();
+        repository.deleteAllNotes();
     }
 
-    public LiveData<List<Note>> getAllNotes(boolean syncWhitServer) {
-        return getRepositoryInstance().getAllNotes(syncWhitServer);
+    public LiveData<List<Note>> getAllNotes() {
+        return liveData;
     }
 
 }

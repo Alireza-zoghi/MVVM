@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.onIte
     private NoteViewModel noteViewModel;
     private NoteAdapter noteAdapter;
     private RecyclerView recyclerView;
-    private Switch syncWhitServerSwitch;
-    private FloatingActionButton buttonAddNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +40,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.onIte
         setContentView(R.layout.activity_main);
 
         init();
-
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-
-        getNotes(syncWhitServerSwitch.isChecked());
-
-        syncWhitServerSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            getNotes(b);
-            if (b){
-                buttonAddNote.setVisibility(View.GONE);
-            }else {
-                buttonAddNote.setVisibility(View.VISIBLE);
-            }
-        });
+        getNotes();
 
     }
 
@@ -63,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.onIte
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Notes");
 
-        buttonAddNote = findViewById(R.id.fab_add_note);
+        FloatingActionButton buttonAddNote = findViewById(R.id.fab_add_note);
         buttonAddNote.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
             startActivityForResult(intent, ADD_NOTE_REQUEST);
@@ -76,11 +62,13 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.onIte
         noteAdapter = new NoteAdapter();
         recyclerView.setAdapter(noteAdapter);
         noteAdapter.setOnItemClickListener(this);
-        syncWhitServerSwitch = findViewById(R.id.note_switch);
     }
 
-    private void getNotes(boolean syncWhitServer) {
-        noteViewModel.getAllNotes(syncWhitServer).observe(this
+    private void getNotes() {
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        noteViewModel.init();
+
+        noteViewModel.getAllNotes().observe(this
                 , notes -> noteAdapter.submitList(notes)
         );
 

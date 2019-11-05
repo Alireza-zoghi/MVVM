@@ -20,35 +20,39 @@ import retrofit2.Response;
 
 public class NoteRepository {
 
+    private static NoteRepository noteRepository;
+    private MutableLiveData<List<Note>> liveData = new MutableLiveData<>();
     private Application context;
     private NoteDAO noteDAO;
-    private NoteDatabase database;
 
-    private MutableLiveData<List<Note>> liveData = new MutableLiveData<>();
-
-    private NoteDAO getNoteDAOInstance() {
-        if (noteDAO == null)
-            noteDAO = getNoteDatabaseInstance().noteDAO();
-        return noteDAO;
-    }
-
-    private NoteDatabase getNoteDatabaseInstance() {
-        if (database == null)
-            database = NoteDatabase.getInstance(context);
-        return database;
-    }
-
-    public NoteRepository(Application application) {
+    private NoteRepository(Application application) {
         this.context = application;
     }
 
-    public LiveData<List<Note>> getAllNotes(boolean syncWhitServer) {
-        if (myApplication.hasNetwork() && syncWhitServer) {
-            getAllNotesFromServer();
-            return liveData;
-        } else {
-            return getNoteDAOInstance().getAllNotes();
-        }
+    public static NoteRepository getInstance(Application application) {
+        if (noteRepository == null)
+            noteRepository = new NoteRepository(application);
+        return noteRepository;
+    }
+
+    private NoteDAO getNoteDAOInstance() {
+        if (noteDAO == null)
+            noteDAO = getNoteDatabase().noteDAO();
+        return noteDAO;
+    }
+
+    private NoteDatabase getNoteDatabase() {
+        return NoteDatabase.getInstance(context);
+    }
+
+    public LiveData<List<Note>> getAllNotes() {
+
+         if (myApplication.hasNetwork()) {
+           getAllNotesFromServer();
+           return liveData;
+         } else {
+           return getNoteDAOInstance().getAllNotes();
+         }
     }
 
     private void getAllNotesFromServer() {
@@ -58,7 +62,6 @@ public class NoteRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     liveData.setValue(response.body());
                 }
-
             }
 
             @Override

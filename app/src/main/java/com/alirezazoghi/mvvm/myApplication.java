@@ -14,10 +14,6 @@ public class myApplication extends Application {
         instance = this;
     }
 
-    public static myApplication getInstance() {
-        return instance;
-    }
-
     public static boolean hasNetwork() {
         return instance.checkIfHasNetwork();
     }
